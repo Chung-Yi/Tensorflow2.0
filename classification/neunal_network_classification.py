@@ -18,8 +18,6 @@ def main():
     
     # create_model_1(X, y)
 
-    # create_model_2(X, y)
-
     # model_3 = create_model_3(X, y)
 
     X_train, y_train = X[:800], y[:800]
@@ -44,7 +42,7 @@ def main():
 
     create_confusion_metrix_plot(y_test, y_preds)
 
-    
+
 
 def create_make_circles_data():
     X, y = make_circles(n_samples=1000, noise=0.03, random_state=42)
@@ -61,7 +59,7 @@ def create_model_1(X, y):
     model_1.compile(loss=tf.keras.losses.BinaryCrossentropy(),
                     optimizer=tf.keras.optimizers.SGD(),
                     metrics=["accuracy"])
-    
+
     # fit the model
     model_1.fit(X, y, epochs=200)
 
