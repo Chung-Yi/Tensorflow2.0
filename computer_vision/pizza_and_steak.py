@@ -47,6 +47,70 @@ def generate_batch_data():
 
     return train_data, valid_data
 
+def generate_batch_with_augmentation():
+
+    
+    def show_origin_and_augmented_images():
+        random_number = random.randint(0, 32)
+        print(f"show image number: {random_number}")
+
+        plt.imshow(images[random_number])
+        plt.title(f"origin image")
+        plt.axis(False)
+
+        plt.figure()
+        plt.imshow(augmented_images[random_number])
+        plt.title(f"augmented image")
+        plt.axis(False)
+
+
+    train_datagen_augmented = ImageDataGenerator(
+        rescale=1/255,
+        rotation_range=0.2,
+        shear_range=0.2,
+        width_shift_range=0.2,
+        height_shift_range=0.3,
+        zoom_range=0.2,
+        horizontal_flip=True
+    )
+
+    train_datagen = ImageDataGenerator(rescale=1/255)
+
+    test_datagen = ImageDataGenerator(rescale=1/255)
+
+    
+    # create augmented data from training directory
+    train_data_augmented = train_datagen_augmented.flow_from_directory(
+        train_dir,
+        target_size=(img_size, img_size),
+        batch_size=batch_size,
+        class_mode="binary",
+        shuffle=False
+    )
+
+    # create non-augmented data from directory
+    train_data = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_size, img_size),
+        batch_size=batch_size,
+        class_mode="binary",
+        shuffle=False
+    )
+
+    # create non-augmented test data from directory
+    test_data = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(img_size, img_size),
+        batch_size=batch_size,
+        class_mode="binary"
+    )
+
+    images, labels = train_data.next()
+    augmented_images, augmented_labels = train_data_augmented.next()
+
+    show_origin_and_augmented_images()
+
+
 def plot_training_curve(history):
     pd.DataFrame(history.history).plot(figsize=(10, 7))
 
@@ -154,6 +218,9 @@ def create_non_CNN_model(train_data, valid_data):
 def main():
     # view_random_image('data/pizza_steak/train', 'steak')
     train_data, valid_data = generate_batch_data()
+
+    # generate augmented image
+    generate_batch_with_augmentation()
     
 
     # create model
