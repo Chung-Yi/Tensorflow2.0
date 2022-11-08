@@ -64,7 +64,7 @@ def generate_batch_with_augmentation():
         plt.axis(False)
 
 
-    train_datagen_augmented = ImageDataGenerator(
+    train_data_augmented = ImageDataGenerator(
         rescale=1/255,
         rotation_range=0.2,
         shear_range=0.2,
@@ -74,22 +74,22 @@ def generate_batch_with_augmentation():
         horizontal_flip=True
     )
 
-    train_datagen = ImageDataGenerator(rescale=1/255)
+    train_data = ImageDataGenerator(rescale=1/255)
 
-    test_datagen = ImageDataGenerator(rescale=1/255)
+    test_data = ImageDataGenerator(rescale=1/255)
 
     
     # create augmented data from training directory
-    train_data_augmented = train_datagen_augmented.flow_from_directory(
+    train_data_augmented = train_data_augmented.flow_from_directory(
         train_dir,
         target_size=(img_size, img_size),
         batch_size=batch_size,
         class_mode="binary",
-        shuffle=False
+        shuffle=True
     )
 
     # create non-augmented data from directory
-    train_data = train_datagen.flow_from_directory(
+    train_data = train_data.flow_from_directory(
         train_dir,
         target_size=(img_size, img_size),
         batch_size=batch_size,
@@ -98,7 +98,7 @@ def generate_batch_with_augmentation():
     )
 
     # create non-augmented test data from directory
-    test_data = test_datagen.flow_from_directory(
+    test_data = test_data.flow_from_directory(
         test_dir,
         target_size=(img_size, img_size),
         batch_size=batch_size,
@@ -109,6 +109,9 @@ def generate_batch_with_augmentation():
     augmented_images, augmented_labels = train_data_augmented.next()
 
     show_origin_and_augmented_images()
+
+
+    return train_data_augmented, test_data
 
 
 def plot_training_curve(history):
@@ -220,7 +223,7 @@ def main():
     train_data, valid_data = generate_batch_data()
 
     # generate augmented image
-    generate_batch_with_augmentation()
+    train_data_augmented, valid_data = generate_batch_with_augmentation()
     
 
     # create model
@@ -230,7 +233,7 @@ def main():
 
     print(model.summary())
 
-    history = train(model, train_data, valid_data)
+    history = train(model, train_data_augmented, valid_data)
 
     plot_training_curve(history)
 
