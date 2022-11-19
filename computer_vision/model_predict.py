@@ -15,6 +15,8 @@ img_size = 224
 
 pizza_img = "data/pizza_steak/test/pizza/11297.jpg"
 
+class_num = 10
+
 def predict_image(model, filename):
     img = image.load_img(filename, target_size=(img_size, img_size))
     plt.imshow(img)
@@ -30,7 +32,7 @@ def predict_image(model, filename):
 
 def main():
     # create model
-    model = create_conv_model()
+    model = create_conv_model(class_num)
 
     # get the latest cp
     latest = tf.train.latest_checkpoint(checkpoint_dir)
