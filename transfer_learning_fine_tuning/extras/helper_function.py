@@ -92,6 +92,13 @@ def create_tensorboard_callback(dir_name, experiment_name):
 
     return tensorboard_callback
 
+def create_checkpoint_callback(checkpoint_file):
+    checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_file, 
+                                                            save_weights_only=True,
+                                                            save_best_only=False,
+                                                            save_freq="epoch",
+                                                            verbose=1)
+    return checkpoint_callback
 
 def plot_loss_curves(history):
     loss = history.history['loss']
@@ -112,10 +119,12 @@ def plot_loss_curves(history):
     # plot accuracy
     plt.figure()
     plt.plot(epochs, accuracy, label='training_accuracy')
-    plt.plot(epochs, val_accuracy, label='val_loss')
-    plt.title('Loss')
+    plt.plot(epochs, val_accuracy, label='val_accuracy')
+    plt.title('Accuracy')
     plt.xlabel('Epochs')
     plt.legend()
+
+    plt.show()
 
 
 def squeeze_dimension():
